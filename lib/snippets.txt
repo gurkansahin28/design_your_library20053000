@@ -1,0 +1,20 @@
+LOAD ASSETS, LOAD FILE AT
+
+@override
+Future load(HttpConnect connect, String uri, {bool useCache: true}) async {
+  String path = uri.substring(1); //uri must start with '/', but path can't
+  path = Path.join(rootDir, path);
+
+  final file = new File(path);
+  if (await file.exists())
+    return loadAsset(connect, new FileAsset(file), useCache ? cache: null);
+
+  if (await new Directory(path).exists())
+    return _loadFileAt(connect, uri, path, connect.server.indexNames, 0,
+        useCache ? cache: null);
+
+  throw new Http404(uri: Uri.tryParse(uri));
+}
+
+https://pub.dev/documentation/stream/latest/stream_plugin/FileLoader/load.html
+---------------------------------------------------------------------
